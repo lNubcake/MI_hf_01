@@ -28,14 +28,24 @@ public class Main {
 	 * majd a végére menni
 	 */
 	
-	static int x = 0;
-	static int y = 0;
-	static int item = 0;
-	static ArrayList<ArrayList<Integer>> Labyrinth = new ArrayList<ArrayList<Integer>>();
+	public static int x = 0;
+	public static int y = 0;
+	public static int item = 0;
+	public static ArrayList<ArrayList<Integer>> IntegerLabyrinth = new ArrayList<ArrayList<Integer>>();
+	public static ArrayList<ArrayList<aNode>> NodeLabyrinth = new ArrayList<ArrayList<aNode>>();
 	
 	public static void main(String[] args)
 	{
 		getInput();
+		setUpNodeMatrix();
+		for(ArrayList<Integer> i : IntegerLabyrinth)
+		{
+			for(Integer ii : i)
+			{
+				System.out.print(ii + " ");
+			}
+			System.out.print("\n");
+		}
 	}
 	
 	/// This function waits for an input and breaks it down to Rows.
@@ -72,7 +82,7 @@ public class Main {
 			{
 				aColumn.add(Integer.parseInt(aString));
 			}
-			Labyrinth.add(aColumn);
+			IntegerLabyrinth.add(aColumn);
 		}
 		setUpParameters();
 	}
@@ -80,10 +90,33 @@ public class Main {
 	/// This function sets up the parameters of the labyrinth
 	public static void setUpParameters()
 	{
-		x = Labyrinth.get(0).size();
-		y = Labyrinth.size()-1;
-		item = Labyrinth.get(Labyrinth.size()-1).get(0);
-		Labyrinth.remove(Labyrinth.size()-1);
+		x = IntegerLabyrinth.get(0).size();
+		y = IntegerLabyrinth.size()-1;
+		item = IntegerLabyrinth.get(IntegerLabyrinth.size()-1).get(0);
+		IntegerLabyrinth.remove(IntegerLabyrinth.size()-1);
 	}
 	
+	/// This function sets up our NodeMatrix
+	public static void setUpNodeMatrix()
+	{
+		for(int i = 0; i < y; i++)
+		{
+			NodeLabyrinth.add(new ArrayList<aNode>());
+			for(int j = 0; j < x ; j++)
+			{
+				//Ha van item
+				if(IntegerLabyrinth.get(i).get(j).intValue() >= 16)
+				{
+					
+					NodeLabyrinth.get(i).add(new aNode(i,j,true));
+					IntegerLabyrinth.get(i).set(j, IntegerLabyrinth.get(i).get(j)-16);
+				}
+				//Ha nincs
+				else
+				{
+					NodeLabyrinth.get(i).add(new aNode(i,j,true));
+				}
+			}
+		}
+	}
 }
