@@ -31,15 +31,15 @@ public class Main {
 	static int x = 0;
 	static int y = 0;
 	static int item = 0;
+	static ArrayList<ArrayList<Integer>> Labyrinth = new ArrayList<ArrayList<Integer>>();
 	
 	public static void main(String[] args)
 	{
-		getInput(x,y,item);
-		
-		System.out.println(x + " "+ y +" "+ item);
+		getInput();
 	}
 	
-	public static void/*??*/ getInput(int x, int y, int item)
+	/// This function waits for an input and breaks it down to Rows.
+	public static void getInput()
 	{
 		Scanner in = new Scanner(System.in);
 		ArrayList<String> Rows = new ArrayList<String>();
@@ -56,13 +56,34 @@ public class Main {
 			}
 		}while(in.hasNextLine());
 		
-		//Tárgyak számának meghatározása
-		item = Integer.parseInt(Rows.get(Rows.size()-1));
-		Rows.remove(Rows.size()-1);
-		y = Rows.size();
-		x = Math.toIntExact(Rows.get(0).chars().filter(ch -> ch == ' ').count());
+		processStringArray(Rows);
 		
 		in.close();
 	}
-
+	
+	/// This function processes a StringArray to a 2D Integer matrix
+	public static void processStringArray(ArrayList<String> stringToProcess)
+	{
+		for(String s : stringToProcess)
+		{
+			String[] split = s.split(" ");
+			ArrayList<Integer> aColumn = new ArrayList<Integer>();
+			for(String aString : split)
+			{
+				aColumn.add(Integer.parseInt(aString));
+			}
+			Labyrinth.add(aColumn);
+		}
+		setUpParameters();
+	}
+	
+	/// This function sets up the parameters of the labyrinth
+	public static void setUpParameters()
+	{
+		x = Labyrinth.get(0).size();
+		y = Labyrinth.size()-1;
+		item = Labyrinth.get(Labyrinth.size()-1).get(0);
+		Labyrinth.remove(Labyrinth.size()-1);
+	}
+	
 }
