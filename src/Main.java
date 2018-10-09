@@ -33,11 +33,25 @@ public class Main {
 	public static int item = 0;
 	public static ArrayList<ArrayList<Integer>> IntegerLabyrinth = new ArrayList<ArrayList<Integer>>();
 	public static ArrayList<ArrayList<aNode>> NodeLabyrinth = new ArrayList<ArrayList<aNode>>();
+	public static ArrayList<Connection> allConnection = new ArrayList<Connection>();
 	
 	public static void main(String[] args)
 	{
 		getInput();
+		setUpParameters();
 		setUpNodeMatrix();
+		//setUpConnections();
+		
+		// TODO this works well
+		/*
+		ArrayList<String> strs = new ArrayList<String>();
+		strs.add("1");strs.add("2");strs.add("3");
+		strs.remove("2");
+		for(String s : strs)
+		{
+			System.out.print(s + " ");
+		}
+		*/
 		for(ArrayList<Integer> i : IntegerLabyrinth)
 		{
 			for(Integer ii : i)
@@ -84,7 +98,6 @@ public class Main {
 			}
 			IntegerLabyrinth.add(aColumn);
 		}
-		setUpParameters();
 	}
 	
 	/// This function sets up the parameters of the labyrinth
@@ -118,5 +131,44 @@ public class Main {
 				}
 			}
 		}
+	}
+	
+	///This function sets up all the connections
+	public static void setUpConnections()
+	{
+		
+		for(int i = 0; i < x; i++)
+		{
+			for(int j = 0; j < y; j++)
+			{
+				ArrayList<String> compass = new ArrayList<String>();
+				// TODO think about this, gonna be good
+				while(IntegerLabyrinth.get(i).get(j) != 0)
+				{
+					if(IntegerLabyrinth.get(i).get(j) >= 8)
+					{
+						//északi fal
+						
+					}
+					else if(IntegerLabyrinth.get(i).get(j) >= 4)
+					{
+						//keleti fal
+					}
+					else if(IntegerLabyrinth.get(i).get(j) >= 2)
+					{
+						//déli fal
+					}
+					else if(IntegerLabyrinth.get(i).get(j) >= 1)
+					{
+						//nyugati fal
+					}
+				}
+			}
+		}
+	}
+	
+	public static void validateConnection(ArrayList<Connection> Connections, Connection conectionToValidate)
+	{
+		
 	}
 }
