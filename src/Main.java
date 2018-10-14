@@ -34,6 +34,8 @@ public class Main {
 	public static ArrayList<ArrayList<Integer>> IntegerLabyrinth = new ArrayList<ArrayList<Integer>>();
 	public static ArrayList<ArrayList<aNode>> NodeLabyrinth = new ArrayList<ArrayList<aNode>>();
 	public static ArrayList<Connection> allConnection = new ArrayList<Connection>();
+	public static ArrayList<aNode> path = new ArrayList<aNode>();
+	public static aNode currentPosition;
 	
 	public static void main(String[] args)
 	{
@@ -41,24 +43,39 @@ public class Main {
 		setUpParameters();
 		setUpNodeMatrix();
 		setUpConnections();
+		setUpNodeConnections();
+		currentPosition = NodeLabyrinth.get(0).get(0);
 		
-		// TODO this works well
-		/*
-		ArrayList<String> strs = new ArrayList<String>();
-		strs.add("1");strs.add("2");strs.add("3");
-		strs.remove("2");
-		for(String s : strs)
+//		for(ArrayList<Integer> i : IntegerLabyrinth)
+//		{
+//			for(Integer ii : i)
+//			{
+//				System.out.print(ii + " ");
+//			}
+//			System.out.print("\n");
+//		}
+		
+//		while(item != 0)
+//		{
+//			for(ArrayList<aNode> w : NodeLabyrinth)
+//				for(aNode a : w)
+//					pickUp(a);
+//		}
+		
+		// Everything is set up, not the AI comes.
+		
+		while(item > 0)
 		{
-			System.out.print(s + " ");
-		}
-		*/
-		for(ArrayList<Integer> i : IntegerLabyrinth)
-		{
-			for(Integer ii : i)
+			for(ArrayList<aNode> Row : NodeLabyrinth)
 			{
-				System.out.print(ii + " ");
+				for(aNode Column : Row)
+				{
+					if(Column.target)
+					{
+						DFS(currentPosition,Column);
+					}
+				}
 			}
-			System.out.print("\n");
 		}
 	}
 	
@@ -180,6 +197,23 @@ public class Main {
 		}
 	}
 	
+	/// This functions stores the connections of a Node-s neighbours
+	public static void setUpNodeConnections()
+	{
+		for(ArrayList<aNode> Rows : NodeLabyrinth)
+		{
+			for(aNode Columns : Rows)
+			{
+				for(Connection c : allConnection)
+				{
+					if(c.a.equals(Columns) || c.b.equals(Columns))
+					{
+						Columns.neighbours.add(c);
+					}
+				}
+			}
+		}
+	}
 	///This function checks whether the connection we wanna add is already in allConnections. In case it is not, it adds it.
 	public static void validateConnection(int yy, int xx, String s)
 	{
@@ -243,4 +277,69 @@ public class Main {
 			break;
 		}
 	}
+	
+	/// This function picks up an item, if there is.
+	public static void pickUp(aNode a)
+	{
+		if(a.target)
+		{
+			a.target = false;
+			System.out.println("felvesz");
+			item -= 1;
+		}
+	}
+	
+	/// This function implements a DFS, in which we can get to an item
+	public static void DFS(aNode startingPoint, aNode endingPoint)
+	{
+		path.add(startingPoint);
+		recursion(startingPoint,endingPoint);	
+		for(aNode a : path)
+		{
+			System.out.println(a.x + " " + a.y);
+		}
+		currentPosition = endingPoint;
+		path.clear();
+		returnFlag = false;
+	}
+	
+	public static Boolean returnFlag = false;
+	public static void recursion(aNode startingPoint, aNode endingPoint)
+	{
+		int numberOfNeighbours = startingPoint.neighbours.size();
+		while(numberOfNeighbours != 0)
+		{	
+			aNode next = null;
+			if(returnFlag)
+			{
+				return;
+			}
+			if(startingPoint.neighbours.get(numberOfNeighbours-1).a.equals(startingPoint))
+			{
+				if(!path.contains(startingPoint.neighbours.get(numberOfNeighbours-1).b))
+					next = new aNode(startingPoint.neighbours.get(numberOfNeighbours-1).b);
+			}
+			else if(startingPoint.neighbours.get(numberOfNeighbours-1).b.equals(startingPoint))
+			{
+				if(!path.contains(startingPoint.neighbours.get(numberOfNeighbours-1).a))
+					next = new aNode(startingPoint.neighbours.get(numberOfNeighbours-1).a);
+			}
+			if(startingPoint.equals(endingPoint))
+			{
+				returnFlag = true;
+				return;
+			}
+			try{
+			path.add(next);
+			}catch(Exception e)
+			{}
+			pickUp(next);
+			recursion(next,endingPoint);
+			numberOfNeighbours -= 1;
+		}
+		if(returnFlag)
+			return;
+		path.remove(path.size()-1);
+	}
 }
+
