@@ -40,7 +40,7 @@ public class Main {
 		getInput();
 		setUpParameters();
 		setUpNodeMatrix();
-		//setUpConnections();
+		setUpConnections();
 		
 		// TODO this works well
 		/*
@@ -127,7 +127,7 @@ public class Main {
 				//Ha nincs
 				else
 				{
-					NodeLabyrinth.get(i).add(new aNode(i,j,true));
+					NodeLabyrinth.get(i).add(new aNode(i,j,false));
 				}
 			}
 		}
@@ -137,38 +137,110 @@ public class Main {
 	public static void setUpConnections()
 	{
 		
-		for(int i = 0; i < x; i++)
+		for(int i = 0; i < y; i++)
 		{
-			for(int j = 0; j < y; j++)
+			for(int j = 0; j < x; j++)
 			{
 				ArrayList<String> compass = new ArrayList<String>();
+				compass.add("north"); compass.add("east"); compass.add("south"); compass.add("west");
 				// TODO think about this, gonna be good
 				while(IntegerLabyrinth.get(i).get(j) != 0)
 				{
 					if(IntegerLabyrinth.get(i).get(j) >= 8)
 					{
 						//északi fal
+						IntegerLabyrinth.get(i).set(j, IntegerLabyrinth.get(i).get(j)-8);
+						compass.remove("north");
 						
 					}
 					else if(IntegerLabyrinth.get(i).get(j) >= 4)
 					{
 						//keleti fal
+						IntegerLabyrinth.get(i).set(j, IntegerLabyrinth.get(i).get(j)-4);
+						compass.remove("east");
 					}
 					else if(IntegerLabyrinth.get(i).get(j) >= 2)
 					{
 						//déli fal
+						IntegerLabyrinth.get(i).set(j, IntegerLabyrinth.get(i).get(j)-2);
+						compass.remove("south");
 					}
 					else if(IntegerLabyrinth.get(i).get(j) >= 1)
 					{
 						//nyugati fal
+						IntegerLabyrinth.get(i).set(j, IntegerLabyrinth.get(i).get(j)-1);
+						compass.remove("west");
 					}
+				}
+				for(String s : compass)
+				{
+					validateConnection(i,j,s);
 				}
 			}
 		}
 	}
 	
-	public static void validateConnection(ArrayList<Connection> Connections, Connection conectionToValidate)
+	///This function checks whether the connection we wanna add is already in allConnections. In case it is not, it adds it.
+	public static void validateConnection(int yy, int xx, String s)
 	{
-		
+		switch(s)
+		{
+		case "north":
+			if(yy != 0)
+			{
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy-1).get(xx));
+				for(Connection c : allConnection)
+				{
+					if(c.equals(ConnectionToAdd))
+					{
+						return;
+					}
+				}
+				allConnection.add(ConnectionToAdd);
+			}
+			break;
+		case "east":
+			if( xx != x-1)
+			{
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx+1));
+				for(Connection c : allConnection)
+				{
+					if(c.equals(ConnectionToAdd))
+					{
+						return;
+					}
+				}
+				allConnection.add(ConnectionToAdd);
+			}
+			break;
+		case "south":
+			if( yy != y-1)
+			{
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy+1).get(xx));
+				for(Connection c : allConnection)
+				{
+					if(c.equals(ConnectionToAdd))
+					{
+						return;
+					}
+				}
+				allConnection.add(ConnectionToAdd);
+			}
+			break;
+		case "west":
+			if( xx != 0)
+			{
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx-1));
+				for(Connection c : allConnection)
+				{
+					if(c.equals(ConnectionToAdd))
+					{
+						return;
+					}
+				}
+				allConnection.add(ConnectionToAdd);
+			}
+			break;
+		}
 	}
 }
