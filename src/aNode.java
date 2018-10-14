@@ -27,9 +27,12 @@ public class aNode
 	public Boolean equals(aNode compared)
 	{
 		if(x == compared.x)
+		{
 			if(y == compared.y)
-				if(target == compared.target)
-					return true;
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }

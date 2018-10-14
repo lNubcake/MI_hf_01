@@ -19,6 +19,18 @@ public class Main {
 8 0 19
 12 4 2
 1
+
+10 9 5 3 9 5 5 5 5 3
+12 6 9 6 10 11 9 5 5 6
+11 9 6 13 4 0 4 5 5 3
+10 12 5 5 3 12 7 9 3 10
+8 1 5 7 12 3 9 6 8 2
+10 10 9 5 3 10 10 9 0 2
+10 12 6 9 2 10 10 10 10 10
+28 1 7 10 10 10 8 0 4 2
+11 10 9 6 14 10 12 4 3 10
+12 6 12 5 5 4 5 5 6 10
+1
 */
 	
 	/* Tervek
@@ -41,6 +53,8 @@ public class Main {
 	{
 		getInput();
 		setUpParameters();
+		int xx = x;
+		int yy = y;
 		setUpNodeMatrix();
 		setUpConnections();
 		setUpNodeConnections();
@@ -55,13 +69,28 @@ public class Main {
 //			System.out.print("\n");
 //		}
 		
-//		while(item != 0)
-//		{
-//			for(ArrayList<aNode> w : NodeLabyrinth)
-//				for(aNode a : w)
-//					pickUp(a);
-//		}
+		/*while(item != 0)
+		{
+			for(ArrayList<aNode> w : NodeLabyrinth)
+				for(aNode a : w)
+				{
+					/*pickUp(a);*//*
+					System.out.print(a.x + " " + a.y+ " ");
+				}
+			System.out.print("\n");
+		}*/
 		
+		/*for(ArrayList<aNode> a : NodeLabyrinth)
+		{
+			for(aNode w : a)
+			{
+				if(w.target)
+					System.out.print("tárgy");
+				System.out.print(w.x + "" +w.y+" ");
+			}
+			System.out.print("\n\n");
+		}
+		*/
 		// Everything is set up, not the AI comes.
 		
 		while(item > 0)
@@ -73,10 +102,12 @@ public class Main {
 					if(Column.target)
 					{
 						DFS(currentPosition,Column);
+						System.out.println("felvesz");
 					}
 				}
 			}
 		}
+		DFS(currentPosition,NodeLabyrinth.get(y-1).get(x-1));
 	}
 	
 	/// This function waits for an input and breaks it down to Rows.
@@ -90,7 +121,7 @@ public class Main {
 			Rows.add(in.nextLine());
 			if(Rows.size() >=2 )
 			{
-				if(Rows.get(Rows.size()-2).length() != Rows.get(Rows.size()-1).length())
+				if(!Rows.get(Rows.size()-1).contains(" "))
 				{
 					break;
 				}
@@ -109,9 +140,11 @@ public class Main {
 		{
 			String[] split = s.split(" ");
 			ArrayList<Integer> aColumn = new ArrayList<Integer>();
+			//System.out.println("aColumn added");
 			for(String aString : split)
 			{
 				aColumn.add(Integer.parseInt(aString));
+				//System.out.println("aRow added");
 			}
 			IntegerLabyrinth.add(aColumn);
 		}
@@ -214,15 +247,16 @@ public class Main {
 			}
 		}
 	}
+	
 	///This function checks whether the connection we wanna add is already in allConnections. In case it is not, it adds it.
 	public static void validateConnection(int yy, int xx, String s)
 	{
 		switch(s)
 		{
 		case "north":
-			if(yy != 0)
+			if(xx != 0)
 			{
-				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy-1).get(xx));
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx-1));
 				for(Connection c : allConnection)
 				{
 					if(c.equals(ConnectionToAdd))
@@ -234,20 +268,6 @@ public class Main {
 			}
 			break;
 		case "east":
-			if( xx != x-1)
-			{
-				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx+1));
-				for(Connection c : allConnection)
-				{
-					if(c.equals(ConnectionToAdd))
-					{
-						return;
-					}
-				}
-				allConnection.add(ConnectionToAdd);
-			}
-			break;
-		case "south":
 			if( yy != y-1)
 			{
 				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy+1).get(xx));
@@ -261,10 +281,24 @@ public class Main {
 				allConnection.add(ConnectionToAdd);
 			}
 			break;
-		case "west":
-			if( xx != 0)
+		case "south":
+			if( xx != x-1)
 			{
-				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx-1));
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy).get(xx+1));
+				for(Connection c : allConnection)
+				{
+					if(c.equals(ConnectionToAdd))
+					{
+						return;
+					}
+				}
+				allConnection.add(ConnectionToAdd);
+			}
+			break;
+		case "west":
+			if( yy != 0)
+			{
+				Connection ConnectionToAdd = new Connection(NodeLabyrinth.get(yy).get(xx),NodeLabyrinth.get(yy-1).get(xx));
 				for(Connection c : allConnection)
 				{
 					if(c.equals(ConnectionToAdd))
@@ -278,26 +312,16 @@ public class Main {
 		}
 	}
 	
-	/// This function picks up an item, if there is.
-	public static void pickUp(aNode a)
-	{
-		if(a.target)
-		{
-			a.target = false;
-			System.out.println("felvesz");
-			item -= 1;
-		}
-	}
-	
 	/// This function implements a DFS, in which we can get to an item
 	public static void DFS(aNode startingPoint, aNode endingPoint)
 	{
-		path.add(startingPoint);
 		recursion(startingPoint,endingPoint);	
 		for(aNode a : path)
 		{
 			System.out.println(a.x + " " + a.y);
 		}
+		item -= 1;
+		endingPoint.target = false;
 		currentPosition = endingPoint;
 		path.clear();
 		returnFlag = false;
@@ -332,8 +356,9 @@ public class Main {
 			try{
 			path.add(next);
 			}catch(Exception e)
-			{}
-			pickUp(next);
+			{
+				System.out.println("exception caught");
+			}
 			recursion(next,endingPoint);
 			numberOfNeighbours -= 1;
 		}
